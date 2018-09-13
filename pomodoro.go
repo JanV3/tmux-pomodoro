@@ -96,15 +96,15 @@ func parseCommand(state State, command string) (newState State, output Output) {
 	switch command {
 	case "start":
 		newState.endTime = state.now.Add(duration)
-		output.text = "Timer started, 25 minutes remaining"
 		killRunningBeepers()
 		_ = startBeeper()
 		refreshTmux()
 	case "status":
 		if state.endTime == noTime {
-			return
+			output.text = ""
+                        return
 		}
-		output.text = formatRemainingTime(state.endTime, state.now) + " 🍅 "
+		output.text = formatRemainingTime(state.endTime, state.now)
 	case "clear":
 		newState.endTime = noTime
 		output.text = "Pomodoro cleared!"
@@ -167,10 +167,10 @@ func formatRemainingTime(existingTime time.Time, now time.Time) string {
 	remainingMinutes := remaining.Minutes()
 
 	if remainingMinutes >= 0 {
-		return strconv.FormatFloat(remainingMinutes, 'f', 0, 64)
+		return strconv.FormatFloat(remainingMinutes, 'f', 0, 64) + " "
 	}
 
-	return "❗️"
+	return ""
 }
 
 func writeTime(t time.Time) {
